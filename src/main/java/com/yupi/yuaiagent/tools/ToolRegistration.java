@@ -14,7 +14,6 @@ public class ToolRegistration {
 
     @Value("${search-api.api-key}")
     private String searchApiKey;
-
     @Bean
     public ToolCallback[] allTools() {
         FileOperationTool fileOperationTool = new FileOperationTool();

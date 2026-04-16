@@ -62,6 +62,7 @@ public class AiController {
     @GetMapping(value = "/love_app/chat/server_sent_event")
     public Flux<ServerSentEvent<String>> doChatWithLoveAppServerSentEvent(String message, String chatId) {
         return loveApp.doChatByStream(message, chatId)
+                //把每一个chunk都封装成着ServerSentEvent
                 .map(chunk -> ServerSentEvent.<String>builder()
                         .data(chunk)
                         .build());
@@ -80,13 +81,16 @@ public class AiController {
         SseEmitter sseEmitter = new SseEmitter(180000L); // 3 分钟超时
         // 获取 Flux 响应式数据流并且直接通过订阅推送给 SseEmitter
         loveApp.doChatByStream(message, chatId)
+                //定义了三个函数，有数据来时 (onNext)、发生错误时 (onError)、全部发完时 (onComplete)
                 .subscribe(chunk -> {
                     try {
                         sseEmitter.send(chunk);
                     } catch (IOException e) {
                         sseEmitter.completeWithError(e);
                     }
-                }, sseEmitter::completeWithError, sseEmitter::complete);
+                },
+                        sseEmitter::completeWithError,
+                        sseEmitter::complete);
         // 返回
         return sseEmitter;
     }

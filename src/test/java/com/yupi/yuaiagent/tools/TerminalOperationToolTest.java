@@ -10,7 +10,7 @@ class TerminalOperationToolTest {
     @Test
     void executeTerminalCommand() {
         TerminalOperationTool terminalOperationTool = new TerminalOperationTool();
-        String command = "dir";
+        String command = "ls";
         String result = terminalOperationTool.executeTerminalCommand(command);
         Assertions.assertNotNull(result);
     }
